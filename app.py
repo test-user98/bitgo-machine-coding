@@ -13,7 +13,6 @@ notifications = []
 notif_id = 1
 
 class Notification(BaseModel):
-    email: str
     btc_price: float
     trade_vol: float
     high: float
@@ -29,7 +28,6 @@ def create_notif(notification: Notification):
 
     notification = {
         "id": notif_id,
-        "email": notification.email,
         "btc_price": notification.btc_price,
         "high_price": notification.high,
         "market_cap": notification.mcap,
@@ -66,11 +64,8 @@ def send_notif(request: SendNotificationRequest):
     global notifications
     for notif in notifications:
         if notif["id"] == request.id:
-            if notif["email"] == request.email:
-                notif["status"] = "sent"
-                return {"message": f"Notification {request.id} sent to {request.email}"}
-            else:
-                raise HTTPException(status_code=400, detail="email do not matlhc")
+            notif["status"] = "sent"
+            return {"message": f"Notification {request.id} sent to {request.email}"}
     raise HTTPException(status_code=404, detail="Notification not found")
 
 
